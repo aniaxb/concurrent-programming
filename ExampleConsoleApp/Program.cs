@@ -1,5 +1,4 @@
 ﻿using ExampleConsoleApp;
-using System;
 
 class Program
 {

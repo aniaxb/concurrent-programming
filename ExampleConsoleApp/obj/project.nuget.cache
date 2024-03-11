@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FH4B05RLBM2TcRIcIkM8PwPtoI0q9q+T8FTVYQxlqXofRW+pkVzMdwK8T3Iu2yPAV1Ss1lhCGLcSz0wUil7fJA==",
+  "dgSpecHash": "aRnkSuuBvA5lDGqY6PT1cKtZapbjzVPyheWy/CJTY99rygGqb6DrVvJPy8U1MqyYNNPIo9UsuwcMXvCkeVIa1g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Administrator\\Desktop\\csharp\\BouncingBallsSimulator\\ExampleConsoleApp\\ExampleConsoleApp.csproj",
+  "projectFilePath": "C:\\Users\\Ania\\Desktop\\wspolbiezne\\concurrent-programming\\ExampleConsoleApp\\ExampleConsoleApp.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
