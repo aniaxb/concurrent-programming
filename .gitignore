@@ -396,3 +396,13 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+ExampleConsoleApp/.vs/
+ExampleConsoleApp/UnitTest/bin/
+ExampleConsoleApp/UnitTest/obj/
+
+UnitTest/bin/
+UnitTest/obj/
+UnitTest/*.dll
+UnitTest/*.pdb
