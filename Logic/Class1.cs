@@ -1,4 +1,8 @@
-﻿namespace Logic
+
+﻿using System;
+
+namespace Logic
+
 {
     public class Class1
     {

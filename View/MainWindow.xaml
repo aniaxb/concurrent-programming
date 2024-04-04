@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
+        Title="Bouncing Balls Simulator" Height="600" Width="1000">
+
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <DockPanel Background="LightBlue">
+        <StackPanel DockPanel.Dock="Right" Width="280" Background="LightBlue" VerticalAlignment="Center" >
+            <Label HorizontalAlignment="Center">Input Number of Balls</Label>
+            <TextBox Text="{Binding NumberOfBalls, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,8,20" />
+            <Button Content="Update" Command="{Binding UpdateBallsCommand}" Margin="8,0,8,20"/>
+            <Button Content="Start Animation" Command="{Binding StartMovingCommand}" Margin="8,0,8,20"/>
+            <Button Content="Stop Animation" Command="{Binding StopMovingCommand}" Margin="8,0,8,20"/>
+        </StackPanel>
+        <Canvas Background="White">
+            <ItemsControl ItemsSource="{Binding Balls}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Fill="Red" Width="20" Height="20"
+                                 Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Canvas>
+    </DockPanel>
 </Window>
