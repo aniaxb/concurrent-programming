@@ -1,8 +1,4 @@
-
-﻿using System;
-
-namespace Logic
-
+﻿namespace ViewModel
 {
     public class Class1
     {
