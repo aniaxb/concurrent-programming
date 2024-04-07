@@ -20,14 +20,13 @@ namespace ViewModel
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
         }
 
-        public ObservableCollection<Ball> Balls { get; } = new ObservableCollection<Ball>();
+        public ObservableCollection<BallLogic> Balls { get; } = new ObservableCollection<BallLogic>();
 
         public ICommand UpdateBallsCommand { get; }
         public ICommand StartMovingCommand { get; }
         public ICommand StopMovingCommand { get; }
         public int NumberOfBalls { get; set; }
 
-        public BallLogic ballLogic;
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -50,16 +49,25 @@ namespace ViewModel
                     YDirection = random.NextDouble(),
                     color = $"#{random.Next(0x1000000):X6}"
                 };
-                Balls.Add(ball);
+                BallLogic ballLogic = new BallLogic(ball);
+                Balls.Add(ballLogic);
             }
-
-            ballLogic = new BallLogic(Balls);
         }
 
         private bool CanStartMoving() => true; // Warunki potrzebne do uruchomienia animacji
         private void StartMoving()
         {
-            ballLogic.Move(5f);
+            Task.Run(() =>
+            {
+                while (true){
+                    foreach (BallLogic ball in Balls)
+                    {
+                        ball.Move();
+                    }
+                    Thread.Sleep(16);
+                }
+            });
+
             
         }
 

@@ -3,19 +3,53 @@ using Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Xml.Linq;
 
 namespace Logic
 {
-    public class BallLogic
+    public class BallLogic : INotifyPropertyChanged
     {
-        public BallLogic(ObservableCollection<Ball> balls)
+        private double x;
+        private double y;
+
+        public BallLogic(Ball ball)
         {
-            Balls = balls;
+            Ball = ball;
+            X = ball.XPosition; 
+            Y = ball.YPosition;
         }
 
-        public ObservableCollection<Ball> Balls { get; set; }
-        public List<Ball> workingBalls { get; set; }
+        public Ball Ball { get; set; }
+
+        public double X { get => x; 
+            set 
+            {
+                x = value;
+                RaisePropertyChanged(nameof(X));
+            }
+        }
+        public double Y { get => y; 
+            set 
+            {
+                y = value;
+                RaisePropertyChanged(nameof(Y));
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
         public bool PositionInBoxX(double x, double y, double xBorder, double yBorder)
         {
@@ -31,37 +65,21 @@ namespace Logic
 
         public void Move(float howFast = 1f)
         {
-            workingBalls = new List<Ball>();
-
-
-            foreach (Ball ball in Balls)
+            if(!PositionInBoxX(X, Y, 300, 300))
             {
-                workingBalls.Add(ball);
-
+                Ball.XDirection *= -1;
             }
 
-            foreach (Ball ball in workingBalls)
+            if (!PositionInBoxY(X, Y, 300, 300))
             {
-                if (!PositionInBoxX(ball.XPosition, ball.YPosition, 300, 300)) //TODO: Replace hardcoded borders
-                {
-                    ball.XDirection *= -1;
-                }
-
-                if (!PositionInBoxY(ball.XPosition, ball.YPosition, 300, 300)) //TODO: Replace hardcoded borders
-                {
-                    ball.YDirection *= -1;
-                }
-
-                ball.XPosition += howFast * ball.XDirection;
-                ball.YPosition += howFast * ball.YDirection;
+                Ball.YDirection *= -1;
             }
-            Balls.Clear();
 
-            foreach (Ball ball in workingBalls)
-            {
-                Balls.Add(ball);
-            }
-            
+            Ball.XPosition += howFast * Ball.XDirection;
+            Ball.YPosition += howFast * Ball.YDirection;
+
+            X = Ball.XPosition;
+            Y = Ball.YPosition;
         }
 
     }
