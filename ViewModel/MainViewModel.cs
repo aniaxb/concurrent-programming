@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data;
+using Logic;
 
 namespace ViewModel
 {
-    public class MainViewModel : ObservableRecipient
+    public class MainViewModel : INotifyPropertyChanged
     {
         public MainViewModel()
         {
@@ -22,6 +26,14 @@ namespace ViewModel
         public ICommand StartMovingCommand { get; }
         public ICommand StopMovingCommand { get; }
         public int NumberOfBalls { get; set; }
+
+        public BallLogic ballLogic;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private void UpdateBalls()
         {
@@ -40,12 +52,15 @@ namespace ViewModel
                 };
                 Balls.Add(ball);
             }
+
+            ballLogic = new BallLogic(Balls);
         }
 
         private bool CanStartMoving() => true; // Warunki potrzebne do uruchomienia animacji
         private void StartMoving()
         {
-            // Rozpocznij animację
+            ballLogic.Move(5f);
+            
         }
 
         private bool CanStopMoving() => true; // Warunki potrzebne do zatrzymania animacji
