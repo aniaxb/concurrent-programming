@@ -11,7 +11,7 @@ namespace ViewModel
     {
         public MainViewModel()
         {
-            UpdateBallsCommand = new RelayCommand<int>(UpdateBalls);
+            UpdateBallsCommand = new RelayCommand(UpdateBalls);
             StartMovingCommand = new RelayCommand(StartMoving, CanStartMoving);
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
         }
@@ -21,12 +21,13 @@ namespace ViewModel
         public ICommand UpdateBallsCommand { get; }
         public ICommand StartMovingCommand { get; }
         public ICommand StopMovingCommand { get; }
+        public int NumberOfBalls { get; set; }
 
-        private void UpdateBalls(int numberOfBalls)
+        private void UpdateBalls()
         {
             Balls.Clear();
             var random = new Random();
-            for (int i = 0; i < numberOfBalls; i++)
+            for (int i = 0; i < NumberOfBalls; i++)
             {
                 var ball = new Ball
                 {
