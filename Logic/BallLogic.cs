@@ -1,64 +1,63 @@
-
 using Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Xml.Linq;
 
 namespace Logic
 {
     public class BallLogic : INotifyPropertyChanged
     {
-        private double x;
-        private double y;
-        private string color;
+        private Ball ball;
 
         public BallLogic(Ball ball)
         {
-            Ball = ball;
-            X = ball.XPosition; 
-            Y = ball.YPosition;
-            color = ball.color;
+            this.ball = ball;
         }
 
-        public Ball Ball { get; set; }
-
-        public double X { get => x; 
-            set 
+        public Ball Ball
+        {
+            get => ball;
+            set
             {
-                x = value;
-                RaisePropertyChanged(nameof(X));
+                ball = value;
+                RaisePropertyChanged();
             }
         }
-        public double Y { get => y; 
-            set 
+
+        public double XPosition
+        {
+            get => Ball.XPosition;
+            set
             {
-                y = value;
-                RaisePropertyChanged(nameof(Y));
+                Ball.XPosition = value;
+                RaisePropertyChanged();
             }
         }
 
-        public string Color { get => color; 
-                       set
-                {
-                    color = value;
-                    RaisePropertyChanged(nameof(Color));
-                }
+        public double YPosition
+        {
+            get => Ball.YPosition;
+            set
+            {
+                Ball.YPosition = value;
+                RaisePropertyChanged();
             }
+        }
 
+        public string Color
+        {
+            get => Ball.color;
+            set
+            {
+                Ball.color = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public bool PositionInBoxX(double x, double y, double xBorder, double yBorder)
@@ -71,16 +70,14 @@ namespace Logic
             return y < yBorder && y > 0;
         }
 
-
-
         public void Move(float howFast = 1f)
         {
-            if(!PositionInBoxX(X, Y, 300, 300))
+            if (!PositionInBoxX(XPosition, YPosition, 300, 300))
             {
                 Ball.XDirection *= -1;
             }
 
-            if (!PositionInBoxY(X, Y, 300, 300))
+            if (!PositionInBoxY(XPosition, YPosition, 300, 300))
             {
                 Ball.YDirection *= -1;
             }
@@ -88,9 +85,8 @@ namespace Logic
             Ball.XPosition += howFast * Ball.XDirection;
             Ball.YPosition += howFast * Ball.YDirection;
 
-            X = Ball.XPosition;
-            Y = Ball.YPosition;
+            RaisePropertyChanged(nameof(XPosition));
+            RaisePropertyChanged(nameof(YPosition));
         }
-
     }
 }
