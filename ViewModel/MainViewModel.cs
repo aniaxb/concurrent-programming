@@ -13,6 +13,7 @@ namespace ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        bool flag = false;
         public MainViewModel()
         {
             UpdateBallsCommand = new RelayCommand(UpdateBalls);
@@ -57,9 +58,10 @@ namespace ViewModel
         private bool CanStartMoving() => true; // Warunki potrzebne do uruchomienia animacji
         private void StartMoving()
         {
+            flag = true;
             Task.Run(() =>
             {
-                while (true){
+                while (flag){
                     foreach (BallLogic ball in Balls)
                     {
                         ball.Move();
@@ -67,14 +69,12 @@ namespace ViewModel
                     Thread.Sleep(16);
                 }
             });
-
-            
         }
 
         private bool CanStopMoving() => true; // Warunki potrzebne do zatrzymania animacji
         private void StopMoving()
         {
-            // Zatrzymaj animację
+            flag = false;
         }
     }
 }
