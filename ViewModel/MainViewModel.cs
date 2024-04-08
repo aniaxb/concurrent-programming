@@ -1,32 +1,45 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data;
+using Logic;
 
 namespace ViewModel
 {
-    public class MainViewModel : ObservableRecipient
+    public class MainViewModel : INotifyPropertyChanged
     {
+        bool flag = false;
         public MainViewModel()
         {
-            UpdateBallsCommand = new RelayCommand<int>(UpdateBalls);
+            UpdateBallsCommand = new RelayCommand(UpdateBalls);
             StartMovingCommand = new RelayCommand(StartMoving, CanStartMoving);
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
         }
 
-        public ObservableCollection<Ball> Balls { get; } = new ObservableCollection<Ball>();
+        public ObservableCollection<BallLogic> Balls { get; } = new ObservableCollection<BallLogic>();
 
         public ICommand UpdateBallsCommand { get; }
         public ICommand StartMovingCommand { get; }
         public ICommand StopMovingCommand { get; }
+        public int NumberOfBalls { get; set; }
 
-        private void UpdateBalls(int numberOfBalls)
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void UpdateBalls()
         {
             Balls.Clear();
             var random = new Random();
-            for (int i = 0; i < numberOfBalls; i++)
+            for (int i = 0; i < NumberOfBalls; i++)
             {
                 var ball = new Ball
                 {
@@ -37,20 +50,31 @@ namespace ViewModel
                     YDirection = random.NextDouble(),
                     color = $"#{random.Next(0x1000000):X6}"
                 };
-                Balls.Add(ball);
+                BallLogic ballLogic = new BallLogic(ball);
+                Balls.Add(ballLogic);
             }
         }
 
         private bool CanStartMoving() => true; // Warunki potrzebne do uruchomienia animacji
         private void StartMoving()
         {
-            // Rozpocznij animację
+            flag = true;
+            Task.Run(() =>
+            {
+                while (flag){
+                    foreach (BallLogic ball in Balls)
+                    {
+                        ball.Move();
+                    }
+                    Thread.Sleep(16);
+                }
+            });
         }
 
         private bool CanStopMoving() => true; // Warunki potrzebne do zatrzymania animacji
         private void StopMoving()
         {
-            // Zatrzymaj animację
+            flag = false;
         }
     }
 }
