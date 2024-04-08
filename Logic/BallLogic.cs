@@ -15,12 +15,14 @@ namespace Logic
     {
         private double x;
         private double y;
+        private string color;
 
         public BallLogic(Ball ball)
         {
             Ball = ball;
             X = ball.XPosition; 
             Y = ball.YPosition;
+            color = ball.color;
         }
 
         public Ball Ball { get; set; }
@@ -39,6 +41,14 @@ namespace Logic
                 RaisePropertyChanged(nameof(Y));
             }
         }
+
+        public string Color { get => color; 
+                       set
+                {
+                    color = value;
+                    RaisePropertyChanged(nameof(Color));
+                }
+            }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
