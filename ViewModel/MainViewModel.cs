@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,9 +12,11 @@ using Logic;
 
 namespace ViewModel
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : ObservableObject
     {
-        bool flag = false;
+        private bool flag = false;
+        private CancellationTokenSource cancellationTokenSource;
+
         public MainViewModel()
         {
             UpdateBallsCommand = new RelayCommand(UpdateBalls);
@@ -28,53 +31,83 @@ namespace ViewModel
         public ICommand StopMovingCommand { get; }
         public int NumberOfBalls { get; set; }
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private ObservableCollection<BallLogic> existingBalls = new ObservableCollection<BallLogic>();
 
         private void UpdateBalls()
         {
-            Balls.Clear();
             var random = new Random();
-            for (int i = 0; i < NumberOfBalls; i++)
+            var existingBallIds = existingBalls.Select(b => b.Ball.BallId).ToList();
+            var newBallIds = Enumerable.Range(0, NumberOfBalls).ToList();
+
+            //Delete balls that are not in updated list
+            foreach (var existingBallId in existingBallIds)
             {
-                var ball = new Ball
+                if (!newBallIds.Contains(existingBallId))
                 {
-                    BallId = i,
-                    XPosition = random.NextDouble() * 300,
-                    YPosition = random.NextDouble() * 300,
-                    XDirection = random.NextDouble(),
-                    YDirection = random.NextDouble(),
-                    color = $"#{random.Next(0x1000000):X6}"
-                };
-                BallLogic ballLogic = new BallLogic(ball);
-                Balls.Add(ballLogic);
+                    var ballToRemove = existingBalls.FirstOrDefault(b => b.Ball.BallId == existingBallId);
+                    if (ballToRemove != null)
+                    {
+                        Balls.Remove(ballToRemove);
+                        existingBalls.Remove(ballToRemove);
+                    }
+                }
+            }
+
+            //Add new balls to the list
+            foreach (var newBallId in newBallIds)
+            {
+                BallLogic ballLogic;
+                var existingBall = existingBalls.FirstOrDefault(b => b.Ball.BallId == newBallId);
+                if (existingBall != null)
+                {
+                    ballLogic = existingBall;
+                }
+                else
+                {
+                    var ball = new Ball
+                    {
+                        BallId = newBallId,
+                        XPosition = random.NextDouble() * 300,
+                        YPosition = random.NextDouble() * 300,
+                        XDirection = random.NextDouble(),
+                        YDirection = random.NextDouble(),
+                        color = $"#{random.Next(0x1000000):X6}"
+                    };
+                    ballLogic = new BallLogic(ball);
+                    existingBalls.Add(ballLogic);
+                }
+
+                if (!Balls.Contains(ballLogic))
+                {
+                    Balls.Add(ballLogic);
+                }
             }
         }
 
-        private bool CanStartMoving() => true; // Warunki potrzebne do uruchomienia animacji
+        private bool CanStartMoving() => true; //Conditions needed to start the animation
         private void StartMoving()
         {
             flag = true;
-            Task.Run(() =>
+            cancellationTokenSource = new CancellationTokenSource();
+
+            Task.Run(async () =>
             {
-                while (flag){
+                while (flag)
+                {
                     foreach (BallLogic ball in Balls)
                     {
                         ball.Move();
                     }
-                    Thread.Sleep(16);
+                    await Task.Delay(16, cancellationTokenSource.Token);
                 }
-            });
+            }, cancellationTokenSource.Token);
         }
 
-        private bool CanStopMoving() => true; // Warunki potrzebne do zatrzymania animacji
+        private bool CanStopMoving() => true; // Conditions needed to stop the animation
         private void StopMoving()
         {
             flag = false;
+            cancellationTokenSource?.Cancel();
         }
     }
 }
