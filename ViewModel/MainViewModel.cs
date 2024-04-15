@@ -64,15 +64,13 @@ namespace ViewModel
                 }
                 else
                 {
-                    var ball = new Ball
-                    {
-                        BallId = newBallId,
-                        XPosition = random.NextDouble() * 300,
-                        YPosition = random.NextDouble() * 300,
-                        XDirection = random.NextDouble(),
-                        YDirection = random.NextDouble(),
-                        color = $"#{random.Next(0x1000000):X6}"
-                    };
+                    var ball = BallApi.CreateBall(
+                        newBallId, 
+                        random.NextDouble() * 300, 
+                        random.NextDouble() * 300, 
+                        random.NextDouble(), 
+                        random.NextDouble(), 
+                        $"#{random.Next(0x1000000):X6}");
                     ballLogic = new BallLogic(ball);
                     existingBalls.Add(ballLogic);
                 }

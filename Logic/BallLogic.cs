@@ -6,14 +6,14 @@ namespace Logic
 {
     public class BallLogic : INotifyPropertyChanged
     {
-        private Ball ball;
+        private BallApi ball;
 
-        public BallLogic(Ball ball)
+        public BallLogic(BallApi ball)
         {
             this.ball = ball;
         }
 
-        public Ball Ball
+        public BallApi Ball
         {
             get => ball;
             set
@@ -43,16 +43,6 @@ namespace Logic
             }
         }
 
-        public string Color
-        {
-            get => Ball.color;
-            set
-            {
-                Ball.color = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
@@ -60,24 +50,24 @@ namespace Logic
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public bool PositionInBoxX(double x, double y, double xBorder, double yBorder)
+        public bool PositionInBoxX(double x, double xBorder)
         {
             return x < xBorder && x > 0;
         }
 
-        public bool PositionInBoxY(double x, double y, double xBorder, double yBorder)
+        public bool PositionInBoxY(double y, double yBorder)
         {
             return y < yBorder && y > 0;
         }
 
         public void Move(float howFast = 1f)
         {
-            if (!PositionInBoxX(XPosition, YPosition, 300, 300))
+            if (!PositionInBoxX(XPosition, 300))
             {
                 Ball.XDirection *= -1;
             }
 
-            if (!PositionInBoxY(XPosition, YPosition, 300, 300))
+            if (!PositionInBoxY(YPosition, 300))
             {
                 Ball.YDirection *= -1;
             }
