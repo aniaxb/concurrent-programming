@@ -37,7 +37,7 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Width="20" Height="20" Fill="{Binding Color}"></Ellipse>
+                    <Ellipse Width="20" Height="20" Fill="{Binding Ball.Color}"></Ellipse>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             </ItemsControl>

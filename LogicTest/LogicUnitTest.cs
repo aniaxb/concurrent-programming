@@ -6,22 +6,18 @@ namespace LogicTest
     public class LogicTests
     {
         private BallLogic ballLogic;
-        private Ball ball;
+        private BallApi ball;
 
         [SetUp]
         public void Setup()
         {
-            ball = new Ball();
+            ball = BallApi.CreateBall(1, 150, 150, 1, 1, "#FF0000");
             ballLogic = new BallLogic(ball);
         }
 
         [Test]
         public void BallLogic_Test_ShouldChangePosition()
         {
-            ball.XPosition = 150;
-            ball.YPosition = 150;
-            ball.XDirection = 1;
-            ball.YDirection = 1;
 
             ballLogic.Move();
 
