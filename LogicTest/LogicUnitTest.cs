@@ -1,5 +1,6 @@
 using Data;
 using Logic;
+using System.Collections.ObjectModel;
 
 namespace LogicTest
 {
@@ -11,7 +12,7 @@ namespace LogicTest
         [SetUp]
         public void Setup()
         {
-            ball = BallApi.CreateBall(1, 150, 150, 1, 1, "#FF0000");
+            ball = BallApi.CreateBall(1, 150, 150, 1, 1, "#FF0000", 10, 20);
             ballLogic = new BallLogic(ball);
         }
 
@@ -19,7 +20,7 @@ namespace LogicTest
         public void BallLogic_Test_ShouldChangePosition()
         {
 
-            ballLogic.Move();
+            ballLogic.MoveTest();
 
             Assert.That(ball.XPosition, Is.EqualTo(151), "XPosition should be incremented by XDirection");
             Assert.That(ball.YPosition, Is.EqualTo(151), "YPosition should be incremented by YDirection");

@@ -65,12 +65,15 @@ namespace ViewModel
                 else
                 {
                     var ball = BallApi.CreateBall(
-                        newBallId, 
-                        random.NextDouble() * 300, 
-                        random.NextDouble() * 300, 
-                        random.NextDouble(), 
-                        random.NextDouble(), 
-                        $"#{random.Next(0x1000000):X6}");
+                        newBallId,
+                        random.NextDouble() * 430,
+                        random.NextDouble() * 430,
+                        random.NextDouble(),
+                        random.NextDouble(),
+                        $"#{random.Next(0x1000000):X6}",
+                        random.Next(20, 30),
+                        random.Next(20, 30)
+                        );
                     ballLogic = new BallLogic(ball);
                     existingBalls.Add(ballLogic);
                 }
@@ -83,6 +86,7 @@ namespace ViewModel
         }
 
         private bool CanStartMoving() => true; //Conditions needed to start the animation
+
         private void StartMoving()
         {
             flag = true;
@@ -94,7 +98,7 @@ namespace ViewModel
                 {
                     foreach (BallLogic ball in Balls)
                     {
-                        ball.Move();
+                        ball.Move(Balls.ToList());
                     }
                     await Task.Delay(16, cancellationTokenSource.Token);
                 }
