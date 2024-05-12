@@ -1,4 +1,6 @@
 using Data;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -60,7 +62,7 @@ namespace Logic
             return y < yBorder && y > 0;
         }
 
-        public void Move(float howFast = 1f)
+        public void MoveTest(float howFast = 1f)
         {
             if (!PositionInBoxX(XPosition, 300))
             {
@@ -78,5 +80,79 @@ namespace Logic
             RaisePropertyChanged(nameof(XPosition));
             RaisePropertyChanged(nameof(YPosition));
         }
+
+        public void Move(List<BallLogic> allBalls, float howFast = 2f)
+        {
+            if (!PositionInBoxX(XPosition, 460 - Ball.Diameter))
+            {
+                Ball.XDirection *= -1;
+            }
+
+            if (!PositionInBoxY(YPosition, 460 - Ball.Diameter))
+            {
+                Ball.YDirection *= -1;
+            }
+
+            // Sprawdzanie kolizji z innymi kulami
+            foreach (BallLogic otherBall in allBalls)
+            {
+                if (otherBall != this && CheckCollision(Ball, otherBall.Ball))
+                {
+                    HandleCollision(Ball, otherBall.Ball);
+                }
+            }
+
+            Ball.XPosition += howFast * Ball.XDirection;
+            Ball.YPosition += howFast * Ball.YDirection;
+
+            RaisePropertyChanged(nameof(XPosition));
+            RaisePropertyChanged(nameof(YPosition));
+        }
+
+        public bool CheckCollision(BallApi ball1, BallApi ball2)
+        {
+            //double distance = Math.Sqrt(Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2));
+            //return distance < (ball1.Diameter/2 + ball2.Diameter/2);
+            double distanceSquared = Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2);
+            double radiusSumSquared = Math.Pow(ball1.Diameter / 2 + ball2.Diameter / 2, 2);
+            return distanceSquared < radiusSumSquared;
+        }
+
+        public void HandleCollision(BallApi ball1, BallApi ball2)
+        {
+            // Obliczanie wektora normalnego od punktu kontaktu do œrodka kuli
+            double normalX = ball2.XPosition - ball1.XPosition;
+            double normalY = ball2.YPosition - ball1.YPosition;
+            double length = Math.Sqrt(normalX * normalX + normalY * normalY);
+            normalX /= length;
+            normalY /= length;
+
+            // Obliczanie sk³adowej prêdkoœci wzd³u¿ wektora normalnego
+            double velAlongNormal = (ball2.XDirection - ball1.XDirection) * normalX + (ball2.YDirection - ball1.YDirection) * normalY;
+
+            // Jeœli sk³adowa jest dodatnia, to kulki siê oddalaj¹, nie wykonujemy odbicia
+            if (velAlongNormal > 0)
+            {
+                return;
+            }
+
+            // Obliczanie wspó³czynnika restytucji
+            double e = 1; // Wspó³czynnik restytucji (1 - odbicie idealne)
+
+            // Obliczanie sk³adowej prêdkoœci po odbiciu wzd³u¿ wektora normalnego
+            double j = -(1 + e) * velAlongNormal;
+            j /= 1 / ball1.Mass + 1 / ball2.Mass;
+
+            // Obliczanie zmiany prêdkoœci
+            double impulseX = j * normalX;
+            double impulseY = j * normalY;
+
+            // Aktualizacja prêdkoœci kul
+            ball1.XDirection -= 1 / ball1.Mass * impulseX;
+            ball1.YDirection -= 1 / ball1.Mass * impulseY;
+            ball2.XDirection += 1 / ball2.Mass * impulseX;
+            ball2.YDirection += 1 / ball2.Mass * impulseY;
+        }
+
     }
 }

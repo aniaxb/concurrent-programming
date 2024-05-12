@@ -24,7 +24,7 @@
             <ItemsControl ItemsSource="{Binding Balls}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                    <Canvas Background="White" Height="320" Width="320">
+                    <Canvas Background="White" Height="460" Width="460">
 
                     </Canvas>
                 </ItemsPanelTemplate>
@@ -37,7 +37,7 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Ellipse Width="20" Height="20" Fill="{Binding Ball.Color}"></Ellipse>
+                    <Ellipse Width="{Binding Ball.Diameter}" Height="{Binding Ball.Diameter}" Fill="{Binding Ball.Color}"></Ellipse>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             </ItemsControl>
