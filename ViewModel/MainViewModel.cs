@@ -72,7 +72,7 @@ namespace ViewModel
                         random.NextDouble(),
                         $"#{random.Next(0x1000000):X6}",
                         random.Next(20, 30),
-                        random.Next(20, 30)
+                        random.Next(10, 30)
                         );
                     ballLogic = new BallLogic(ball);
                     existingBalls.Add(ballLogic);

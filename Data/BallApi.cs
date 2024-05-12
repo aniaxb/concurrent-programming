@@ -6,11 +6,6 @@ namespace Data
 {
     public abstract class BallApi
     {
-        public static BallApi CreateBall(int ID, double XPosition, double YPosition, double XDirection, double YDirection, string color, double radius, double mass)
-        {
-            return new Ball(ID, XPosition, YPosition, XDirection, YDirection, color, radius, mass);
-        }
-
         public int BallId { get; set; }
         public double XPosition { get; set; }
         public double YPosition { get; set; }
@@ -19,6 +14,11 @@ namespace Data
         public string Color { get; set; }
         public double Diameter { get; set; }
         public double Mass { get; set; }
+
+        public static BallApi CreateBall(int ID, double XPosition, double YPosition, double XDirection, double YDirection, string color, double radius, double mass)
+        {
+            return new Ball(ID, XPosition, YPosition, XDirection, YDirection, color, radius, mass);
+        }
 
         private class Ball : BallApi
         {

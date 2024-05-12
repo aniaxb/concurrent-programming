@@ -81,7 +81,7 @@ namespace Logic
             RaisePropertyChanged(nameof(YPosition));
         }
 
-        public void Move(List<BallLogic> allBalls, float howFast = 1f)
+        public void Move(List<BallLogic> allBalls, float howFast = 2f)
         {
             if (!PositionInBoxX(XPosition, 460 - Ball.Diameter))
             {
@@ -109,13 +109,16 @@ namespace Logic
             RaisePropertyChanged(nameof(YPosition));
         }
 
-        private bool CheckCollision(BallApi ball1, BallApi ball2)
+        public bool CheckCollision(BallApi ball1, BallApi ball2)
         {
-            double distance = Math.Sqrt(Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2));
-            return distance < (ball1.Diameter/2 + ball2.Diameter/2);
+            //double distance = Math.Sqrt(Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2));
+            //return distance < (ball1.Diameter/2 + ball2.Diameter/2);
+            double distanceSquared = Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2);
+            double radiusSumSquared = Math.Pow(ball1.Diameter / 2 + ball2.Diameter / 2, 2);
+            return distanceSquared < radiusSumSquared;
         }
 
-        private void HandleCollision(BallApi ball1, BallApi ball2)
+        public void HandleCollision(BallApi ball1, BallApi ball2)
         {
             // Obliczanie wektora normalnego od punktu kontaktu do œrodka kuli
             double normalX = ball2.XPosition - ball1.XPosition;

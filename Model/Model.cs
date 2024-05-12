@@ -10,7 +10,6 @@ namespace Model
     {
         public List<BallApi> Balls { get; set; } = new List<BallApi>();
 
-        // Aktualizacja położenia kul
         public void UpdateBallPosition(int ballId, double xPosition, double yPosition)
         {
             var ballToUpdate = Balls.FirstOrDefault(ball => ball.BallId == ballId);
