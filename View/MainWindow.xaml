@@ -12,13 +12,16 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <DockPanel Background="LightBlue">
-        <StackPanel DockPanel.Dock="Right" Width="280" Background="LightBlue" VerticalAlignment="Center" >
-            <Label HorizontalAlignment="Center">Input Number of Balls</Label>
-            <TextBox Text="{Binding NumberOfBalls, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,8,20" />
-            <Button Content="Update" Command="{Binding UpdateBallsCommand}" Margin="8,0,8,20"/>
-            <Button Content="Start Animation" Command="{Binding StartMovingCommand}" Margin="8,0,8,20"/>
-            <Button Content="Stop Animation" Command="{Binding StopMovingCommand}" Margin="8,0,8,20"/>
+    <DockPanel>
+        <DockPanel.Background>
+            <ImageBrush ImageSource="balls_bg.jpg"/>
+        </DockPanel.Background>
+        <StackPanel DockPanel.Dock="Right" Width="280" Background="#F3CEB9" VerticalAlignment="Center" Margin="0,0,40,0" >
+            <Label HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold" FontFamily="Arial" Padding="14">Input Number of Balls</Label>
+            <TextBox Text="{Binding NumberOfBalls, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,8,20" Padding="6" FontSize="14" FontFamily="Arial"/>
+            <Button Content="Update" Command="{Binding UpdateBallsCommand}" FontSize="14" FontFamily="Arial" Background="#B4B08F" BorderThickness="2" Padding="6" BorderBrush="White" Margin="8,0,8,20"/>
+            <Button Content="Start Animation" Command="{Binding StartMovingCommand}" FontSize="14" FontFamily="Arial" Background="#B4B08F" BorderThickness="2" Padding="6" BorderBrush="White" Margin="8,0,8,20"/>
+            <Button Content="Stop Animation" Command="{Binding StopMovingCommand}" FontSize="14" FontFamily="Arial" Background="#B4B08F" BorderThickness="2" Padding="6" BorderBrush="White" Margin="8,0,8,20"/>
         </StackPanel>
         
             <ItemsControl ItemsSource="{Binding Balls}">

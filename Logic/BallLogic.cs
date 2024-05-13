@@ -111,8 +111,6 @@ namespace Logic
 
         public bool CheckCollision(BallApi ball1, BallApi ball2)
         {
-            //double distance = Math.Sqrt(Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2));
-            //return distance < (ball1.Diameter/2 + ball2.Diameter/2);
             double distanceSquared = Math.Pow(ball1.XPosition - ball2.XPosition, 2) + Math.Pow(ball1.YPosition - ball2.YPosition, 2);
             double radiusSumSquared = Math.Pow(ball1.Diameter / 2 + ball2.Diameter / 2, 2);
             return distanceSquared < radiusSumSquared;
@@ -136,7 +134,6 @@ namespace Logic
                 return;
             }
 
-            // Obliczanie wspó³czynnika restytucji
             double e = 1; // Wspó³czynnik restytucji (1 - odbicie idealne)
 
             // Obliczanie sk³adowej prêdkoœci po odbiciu wzd³u¿ wektora normalnego
