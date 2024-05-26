@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 public class Logger
@@ -13,6 +12,7 @@ public class Logger
     public Logger(string filePath)
     {
         _filePath = filePath;
+        Console.WriteLine($"Logger initialized with file path: {_filePath}");
     }
 
     public void Log(BallApi ball)
@@ -33,11 +33,11 @@ public class Logger
 
                     string jsonString = JsonSerializer.Serialize(logEntry);
                     File.AppendAllText(_filePath, jsonString + Environment.NewLine);
+                    Console.WriteLine($"Logged entry: {jsonString}");
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions (e.g., log to a different place or notify the user)
-                    Console.WriteLine(ex.Message);
+                    Console.WriteLine($"Error writing to log file: {ex.Message}");
                 }
             }
         });

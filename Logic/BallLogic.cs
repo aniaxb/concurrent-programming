@@ -138,7 +138,7 @@ namespace Logic
                 return;
             }
 
-            double e = 1; // Wspó?czynnik restytucji (1 - odbicie idealne)
+            double e = 1; // Wspólczynnik restytucji (1 - odbicie idealne)
 
             double j = -(1 + e) * velAlongNormal;
             j /= 1 / ball1.Mass + 1 / ball2.Mass;
