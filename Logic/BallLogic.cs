@@ -9,10 +9,12 @@ namespace Logic
     public class BallLogic : INotifyPropertyChanged
     {
         private BallApi ball;
+        private Logger logger;
 
-        public BallLogic(BallApi ball)
+        public BallLogic(BallApi ball, Logger logger)
         {
             this.ball = ball;
+            this.logger = logger;
         }
 
         public BallApi Ball
@@ -83,30 +85,35 @@ namespace Logic
 
         public void Move(List<BallLogic> allBalls, float howFast = 2f)
         {
-            if (!PositionInBoxX(XPosition, 460 - Ball.Diameter))
+            lock (this)
             {
-                Ball.XDirection *= -1;
-            }
-
-            if (!PositionInBoxY(YPosition, 460 - Ball.Diameter))
-            {
-                Ball.YDirection *= -1;
-            }
-
-            // Sprawdzanie kolizji z innymi kulami
-            foreach (BallLogic otherBall in allBalls)
-            {
-                if (otherBall != this && CheckCollision(Ball, otherBall.Ball))
+                if (!PositionInBoxX(XPosition, 460 - Ball.Diameter))
                 {
-                    HandleCollision(Ball, otherBall.Ball);
+                    Ball.XDirection *= -1;
                 }
+
+                if (!PositionInBoxY(YPosition, 460 - Ball.Diameter))
+                {
+                    Ball.YDirection *= -1;
+                }
+
+                // Sprawdzanie kolizji z innymi kulami
+                foreach (BallLogic otherBall in allBalls)
+                {
+                    if (otherBall != this && CheckCollision(Ball, otherBall.Ball))
+                    {
+                        HandleCollision(Ball, otherBall.Ball);
+                    }
+                }
+
+                Ball.XPosition += howFast * Ball.XDirection;
+                Ball.YPosition += howFast * Ball.YDirection;
+
+                RaisePropertyChanged(nameof(XPosition));
+                RaisePropertyChanged(nameof(YPosition));
+
+                logger.Log(ball);
             }
-
-            Ball.XPosition += howFast * Ball.XDirection;
-            Ball.YPosition += howFast * Ball.YDirection;
-
-            RaisePropertyChanged(nameof(XPosition));
-            RaisePropertyChanged(nameof(YPosition));
         }
 
         public bool CheckCollision(BallApi ball1, BallApi ball2)
@@ -118,38 +125,31 @@ namespace Logic
 
         public void HandleCollision(BallApi ball1, BallApi ball2)
         {
-            // Obliczanie wektora normalnego od punktu kontaktu do œrodka kuli
             double normalX = ball2.XPosition - ball1.XPosition;
             double normalY = ball2.YPosition - ball1.YPosition;
             double length = Math.Sqrt(normalX * normalX + normalY * normalY);
             normalX /= length;
             normalY /= length;
 
-            // Obliczanie sk³adowej prêdkoœci wzd³u¿ wektora normalnego
             double velAlongNormal = (ball2.XDirection - ball1.XDirection) * normalX + (ball2.YDirection - ball1.YDirection) * normalY;
 
-            // Jeœli sk³adowa jest dodatnia, to kulki siê oddalaj¹, nie wykonujemy odbicia
             if (velAlongNormal > 0)
             {
                 return;
             }
 
-            double e = 1; // Wspó³czynnik restytucji (1 - odbicie idealne)
+            double e = 1; // Wspó?czynnik restytucji (1 - odbicie idealne)
 
-            // Obliczanie sk³adowej prêdkoœci po odbiciu wzd³u¿ wektora normalnego
             double j = -(1 + e) * velAlongNormal;
             j /= 1 / ball1.Mass + 1 / ball2.Mass;
 
-            // Obliczanie zmiany prêdkoœci
             double impulseX = j * normalX;
             double impulseY = j * normalY;
 
-            // Aktualizacja prêdkoœci kul
             ball1.XDirection -= 1 / ball1.Mass * impulseX;
             ball1.YDirection -= 1 / ball1.Mass * impulseY;
             ball2.XDirection += 1 / ball2.Mass * impulseX;
             ball2.YDirection += 1 / ball2.Mass * impulseY;
         }
-
     }
 }

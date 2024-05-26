@@ -16,9 +16,11 @@ namespace ViewModel
     {
         private bool flag = false;
         private CancellationTokenSource cancellationTokenSource;
+        private Logger logger;
 
         public MainViewModel()
         {
+            logger = new Logger("diagnostic_log.json"); // Inicjalizacja loggera
             UpdateBallsCommand = new RelayCommand(UpdateBalls);
             StartMovingCommand = new RelayCommand(StartMoving, CanStartMoving);
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
@@ -39,7 +41,7 @@ namespace ViewModel
             var existingBallIds = existingBalls.Select(b => b.Ball.BallId).ToList();
             var newBallIds = Enumerable.Range(0, NumberOfBalls).ToList();
 
-            //Delete balls that are not in updated list
+            // Delete balls that are not in updated list
             foreach (var existingBallId in existingBallIds)
             {
                 if (!newBallIds.Contains(existingBallId))
@@ -53,7 +55,7 @@ namespace ViewModel
                 }
             }
 
-            //Add new balls to the list
+            // Add new balls to the list
             foreach (var newBallId in newBallIds)
             {
                 BallLogic ballLogic;
@@ -74,7 +76,7 @@ namespace ViewModel
                         random.Next(20, 30),
                         random.Next(10, 30)
                         );
-                    ballLogic = new BallLogic(ball);
+                    ballLogic = new BallLogic(ball, logger); // Przekazanie loggera do BallLogic
                     existingBalls.Add(ballLogic);
                 }
 
@@ -112,4 +114,5 @@ namespace ViewModel
             cancellationTokenSource?.Cancel();
         }
     }
+
 }
