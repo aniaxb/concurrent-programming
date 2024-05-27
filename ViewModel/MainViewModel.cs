@@ -20,7 +20,7 @@ namespace ViewModel
 
         public MainViewModel()
         {
-            logger = new Logger("diagnostic_log.json"); // Inicjalizacja loggera
+            logger = new Logger("C:\\Users\\katar\\OneDrive\\Pulpit\\etap3\\diagnostic_log.json"); // Inicjalizacja loggera
             UpdateBallsCommand = new RelayCommand(UpdateBalls);
             StartMovingCommand = new RelayCommand(StartMoving, CanStartMoving);
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
@@ -114,5 +114,8 @@ namespace ViewModel
             cancellationTokenSource?.Cancel();
         }
     }
+
+    
+
 
 }

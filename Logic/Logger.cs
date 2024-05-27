@@ -14,7 +14,7 @@ public class Logger
         _filePath = filePath;
         Console.WriteLine($"Logger initialized with file path: {_filePath}");
     }
-
+     //uruchomic obiekt timer i przesnies czesc kodu do timera
     public void Log(BallApi ball)
     {
         Task.Run(() =>
@@ -28,7 +28,7 @@ public class Logger
                         BallId = ball.BallId,
                         XPosition = ball.XPosition,
                         YPosition = ball.YPosition,
-                        Timestamp = DateTime.Now
+                        //Timestamp = DateTime.Now
                     };
 
                     string jsonString = JsonSerializer.Serialize(logEntry);

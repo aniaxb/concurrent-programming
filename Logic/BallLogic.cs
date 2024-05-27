@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+//using System.Threading.Timer;
+//using System.Timers.Timer;
+using System.Timers;
 
 namespace Logic
 {
@@ -83,6 +86,8 @@ namespace Logic
             RaisePropertyChanged(nameof(YPosition));
         }
 
+        //public static System.Timers.Timer timer = new System.Timers.Timer();
+        private static Timer aTimer;
         public void Move(List<BallLogic> allBalls, float howFast = 2f)
         {
             lock (this)
@@ -112,8 +117,21 @@ namespace Logic
                 RaisePropertyChanged(nameof(XPosition));
                 RaisePropertyChanged(nameof(YPosition));
 
-                logger.Log(ball);
+                aTimer = new System.Timers.Timer();
+                aTimer.Interval = 1000;
+                aTimer.Elapsed += logBall;
+                aTimer.AutoReset = true;
+                aTimer.Enabled = true;
+
+                //timer.Elapsed += new System.Timers.ElapsedEventHandler(logBall);
+                //timer.Interval = 1000;
+                //timer.Enabled = true;
             }
+        }
+
+        public void logBall(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            logger.Log(ball);
         }
 
         public bool CheckCollision(BallApi ball1, BallApi ball2)
