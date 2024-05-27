@@ -15,7 +15,7 @@ public class Logger
         Console.WriteLine($"Logger initialized with file path: {_filePath}");
     }
 
-    public void Log(BallApi ball)
+    public virtual void Log(BallApi ball)
     {
         Task.Run(() =>
         {
