@@ -76,7 +76,7 @@ namespace ViewModel
                         random.Next(20, 30),
                         random.Next(10, 30)
                         );
-                    ballLogic = new BallLogic(ball, logger); // Przekazanie loggera do BallLogic
+                    ballLogic = new BallLogic(ball); // Przekazanie loggera do BallLogic
                     existingBalls.Add(ballLogic);
                 }
 
@@ -102,6 +102,7 @@ namespace ViewModel
                     {
                         ball.Move(Balls.ToList());
                     }
+                    logger.Log(Balls.ToList());
                     await Task.Delay(16, cancellationTokenSource.Token);
                 }
             }, cancellationTokenSource.Token);

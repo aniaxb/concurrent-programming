@@ -9,12 +9,10 @@ namespace Logic
     public class BallLogic : INotifyPropertyChanged
     {
         private BallApi ball;
-        private Logger logger;
-
-        public BallLogic(BallApi ball, Logger logger)
+        
+        public BallLogic(BallApi ball)
         {
             this.ball = ball;
-            this.logger = logger;
         }
 
         public BallApi Ball
@@ -35,6 +33,12 @@ namespace Logic
                 Ball.XPosition = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public double BallId
+        {
+            get => Ball.BallId;
+            
         }
 
         public double YPosition
@@ -112,7 +116,7 @@ namespace Logic
                 RaisePropertyChanged(nameof(XPosition));
                 RaisePropertyChanged(nameof(YPosition));
 
-                logger.Log(ball);
+                //logger.Log(ball);
             }
         }
 
