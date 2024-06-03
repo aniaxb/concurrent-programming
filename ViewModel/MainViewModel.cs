@@ -76,7 +76,7 @@ namespace ViewModel
                         random.Next(20, 30),
                         random.Next(10, 30)
                         );
-                    ballLogic = new BallLogic(ball); // Przekazanie loggera do BallLogic
+                    ballLogic = new BallLogic(ball);
                     existingBalls.Add(ballLogic);
                 }
 
@@ -93,9 +93,7 @@ namespace ViewModel
         {
             flag = true;
             cancellationTokenSource = new CancellationTokenSource();
-
-            var logInterval = TimeSpan.FromSeconds(2);
-            var lastLogTime = DateTime.Now;
+            logger.StartLogging(); 
 
             Task.Run(async () =>
             {
@@ -106,24 +104,19 @@ namespace ViewModel
                         ball.Move(Balls.ToList());
                     }
 
-                    if (DateTime.Now - lastLogTime >= logInterval)
-                    {
-                        logger.Log(Balls.ToList());
-                        lastLogTime = DateTime.Now;
-                    }
-
-                    //logger.Log(Balls.ToList());
+                    logger.UpdateBalls(Balls.ToList());
                     await Task.Delay(16, cancellationTokenSource.Token);
                 }
             }, cancellationTokenSource.Token);
         }
 
         private bool CanStopMoving() => true; // Conditions needed to stop the animation
+
         private void StopMoving()
         {
             flag = false;
             cancellationTokenSource?.Cancel();
+            logger.StopLogging(); 
         }
     }
-
 }
