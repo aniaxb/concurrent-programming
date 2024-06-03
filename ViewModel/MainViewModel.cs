@@ -20,7 +20,7 @@ namespace ViewModel
 
         public MainViewModel()
         {
-            logger = new Logger("diagnostic_log.json"); // Inicjalizacja loggera
+            logger = new Logger("C:\\Users\\Administrator\\Desktop\\logs\\diagnostic_log.json");  // Inicjalizacja loggera
             UpdateBallsCommand = new RelayCommand(UpdateBalls);
             StartMovingCommand = new RelayCommand(StartMoving, CanStartMoving);
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
@@ -94,6 +94,9 @@ namespace ViewModel
             flag = true;
             cancellationTokenSource = new CancellationTokenSource();
 
+            var logInterval = TimeSpan.FromSeconds(2);
+            var lastLogTime = DateTime.Now;
+
             Task.Run(async () =>
             {
                 while (flag)
@@ -102,7 +105,14 @@ namespace ViewModel
                     {
                         ball.Move(Balls.ToList());
                     }
-                    logger.Log(Balls.ToList());
+
+                    if (DateTime.Now - lastLogTime >= logInterval)
+                    {
+                        logger.Log(Balls.ToList());
+                        lastLogTime = DateTime.Now;
+                    }
+
+                    //logger.Log(Balls.ToList());
                     await Task.Delay(16, cancellationTokenSource.Token);
                 }
             }, cancellationTokenSource.Token);
