@@ -1,6 +1,9 @@
 ﻿using Data;
+using Logic;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -15,31 +18,27 @@ public class Logger
         Console.WriteLine($"Logger initialized with file path: {_filePath}");
     }
 
-    public virtual void Log(BallApi ball)
+    public virtual void Log(List<BallLogic> balls)
     {
-        Task.Run(() =>
+        if (balls.Count == 0)
         {
-            lock (_lock)
+            File.AppendAllText(_filePath, "ball list is empty" + Environment.NewLine);
+        }
+        else
+        {
+            foreach (BallLogic ball in balls)
             {
-                try
+                var logEntry = new
                 {
-                    var logEntry = new
-                    {
-                        BallId = ball.BallId,
-                        XPosition = ball.XPosition,
-                        YPosition = ball.YPosition,
-                        Timestamp = DateTime.Now
-                    };
-
-                    string jsonString = JsonSerializer.Serialize(logEntry);
-                    File.AppendAllText(_filePath, jsonString + Environment.NewLine);
-                    Console.WriteLine($"Logged entry: {jsonString}");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error writing to log file: {ex.Message}");
-                }
+                    BallId = ball.BallId,
+                    XPosition = ball.XPosition,
+                    YPosition = ball.YPosition,
+                    Timestamp = DateTime.Now
+                };
+                string jsonString = JsonSerializer.Serialize(logEntry);
+                File.AppendAllText(_filePath, jsonString + Environment.NewLine);
+                Console.WriteLine($"Logged entry: {jsonString}");
             }
-        });
+        }  
     }
 }

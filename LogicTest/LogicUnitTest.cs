@@ -13,13 +13,16 @@ namespace LogicTest
         private BallLogic ballLogic;
         private BallApi ball;
         private Logger logger;
+        private List<BallLogic> balls;
 
         [SetUp]
         public void Setup()
         {
             ball = BallApi.CreateBall(1, 150, 150, 1, 1, "#FF0000", 10, 20);
             logger = new Logger("test_log.json");
-            ballLogic = new BallLogic(ball, logger);
+            ballLogic = new BallLogic(ball);
+            balls = new List<BallLogic>();
+            balls.Add(ballLogic);
         }
 
         [Test]
@@ -50,10 +53,10 @@ namespace LogicTest
             List<BallLogic> balls = new List<BallLogic>();
 
             balls.Add(ballLogic);
-            balls.Add(new BallLogic(otherBall, logger));
+            balls.Add(new BallLogic(otherBall));
 
             ballLogic.Move(balls);
-            balls.Add(new BallLogic(otherBall, logger));
+            balls.Add(new BallLogic(otherBall));
 
             ballLogic.Move(balls);
 
@@ -80,11 +83,12 @@ namespace LogicTest
         {
             var mockLogger = new Mock<Logger>("mock_log.json");
             var ball = BallApi.CreateBall(1, 100, 100, 1, 1, "#FF0000", 10, 20);
-            var ballLogic = new BallLogic(ball, mockLogger.Object);
-
+            var ballLogic = new BallLogic(ball);
+            List<BallLogic> balls = new List<BallLogic>();
+            balls.Add(ballLogic);
             ballLogic.Move(new List<BallLogic>(), 1);
-
-            mockLogger.Verify(logger => logger.Log(It.IsAny<BallApi>()), Times.Once);
+            mockLogger.Object.Log(balls);
+            mockLogger.Verify(logger => logger.Log(It.IsAny<List<BallLogic>>()), Times.Once);
         }
 
         [Test]
@@ -92,7 +96,7 @@ namespace LogicTest
         {
             var logger = new Logger("test_log.json");
             var ball = BallApi.CreateBall(1, 100, 100, 1, 1, "#FF0000", 10, 20);
-            var ballLogic = new BallLogic(ball, logger);
+            var ballLogic = new BallLogic(ball);
 
             double initialX = ball.XPosition;
             double initialY = ball.YPosition;
