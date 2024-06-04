@@ -20,7 +20,7 @@ namespace ViewModel
 
         public MainViewModel()
         {
-            logger = new Logger("C:\\Users\\Administrator\\Desktop\\logs\\diagnostic_log.json");  // Inicjalizacja loggera
+            logger = new Logger("C:\\Users\\katar\\Downloads\\diagnostic_log.json");  // Inicjalizacja loggera
             UpdateBallsCommand = new RelayCommand(UpdateBalls);
             StartMovingCommand = new RelayCommand(StartMoving, CanStartMoving);
             StopMovingCommand = new RelayCommand(StopMoving, CanStopMoving);
@@ -78,6 +78,7 @@ namespace ViewModel
                         );
                     ballLogic = new BallLogic(ball);
                     existingBalls.Add(ballLogic);
+
                 }
 
                 if (!Balls.Contains(ballLogic))
@@ -85,6 +86,8 @@ namespace ViewModel
                     Balls.Add(ballLogic);
                 }
             }
+            logger.UpdateBalls(Balls.ToList());
+
         }
 
         private bool CanStartMoving() => true; //Conditions needed to start the animation
@@ -93,7 +96,6 @@ namespace ViewModel
         {
             flag = true;
             cancellationTokenSource = new CancellationTokenSource();
-            logger.StartLogging(); 
 
             Task.Run(async () =>
             {
@@ -104,7 +106,6 @@ namespace ViewModel
                         ball.Move(Balls.ToList());
                     }
 
-                    logger.UpdateBalls(Balls.ToList());
                     await Task.Delay(16, cancellationTokenSource.Token);
                 }
             }, cancellationTokenSource.Token);
@@ -116,7 +117,6 @@ namespace ViewModel
         {
             flag = false;
             cancellationTokenSource?.Cancel();
-            logger.StopLogging(); 
         }
     }
 }

@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Timers;
+using System.Threading;
+using System.Xml.Serialization;
+
 
 public class Logger
 {
@@ -16,55 +18,40 @@ public class Logger
     {
         _filePath = filePath;
         _balls = new List<BallLogic>();
-        _timer = new Timer(2000);
-        _timer.Elapsed += OnTimedEvent;
-        _timer.AutoReset = true;
-        _timer.Enabled = false; 
+        _timer = new Timer(TimerCallback, null, 5, 2000);
         Console.WriteLine($"Logger initialized with file path: {_filePath}");
     }
 
-    private void OnTimedEvent(Object source, ElapsedEventArgs e)
+    private void TimerCallback(Object o)
     {
-        lock (_lock)
+        if (_balls.Count == 0)
         {
-            if (_balls.Count == 0)
+            File.AppendAllText(_filePath, "ball list is empty" + Environment.NewLine);
+        }
+        else
+        {
+            foreach (BallLogic ball in _balls)
             {
-                File.AppendAllText(_filePath, "ball list is empty" + Environment.NewLine);
-            }
-            else
-            {
-                foreach (BallLogic ball in _balls)
+                var logEntry = new
                 {
-                    var logEntry = new
-                    {
-                        BallId = ball.BallId,
-                        XPosition = ball.XPosition,
-                        YPosition = ball.YPosition,
-                        Timestamp = DateTime.Now
-                    };
-                    string jsonString = JsonSerializer.Serialize(logEntry);
-                    File.AppendAllText(_filePath, jsonString + Environment.NewLine);
-                    Console.WriteLine($"Logged entry: {jsonString}");
-                }
+                    BallId = ball.BallId,
+                    XPosition = ball.XPosition,
+                    YPosition = ball.YPosition,
+                    Timestamp = DateTime.Now
+                };
+                string jsonString = JsonSerializer.Serialize(logEntry);
+                File.AppendAllText(_filePath, jsonString + Environment.NewLine);
+                Console.WriteLine($"Logged entry: {jsonString}");
             }
         }
     }
+
 
     public void UpdateBalls(List<BallLogic> balls)
     {
-        lock (_lock)
-        {
-            _balls = balls;
-        }
+
+        _balls = balls;
+
     }
 
-    public void StartLogging()
-    {
-        _timer.Start();
-    }
-
-    public void StopLogging()
-    {
-        _timer.Stop();
-    }
 }
